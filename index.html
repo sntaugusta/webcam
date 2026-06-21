@@ -49,7 +49,7 @@
 <body>
 
   <div id="video-container">
-    <video id="webcam" autoplay playsinline muted controls></video>
+    <video id="webcam" autoplay playsinline></video>
   </div>
 
   <script>
@@ -70,7 +70,23 @@
         alert("Não foi possível acessar a câmera. Verifique as permissões.");
       }
     }
-    
+
+    // 2. Função para alternar o modo Fullscreen
+    function alternarFullscreen() {
+      alert(1)
+      // Verifica se já está em fullscreen
+      if (!document.fullscreenElement) {
+        // Se não estiver, solicita o fullscreen para o CONTAINER (para manter o botão visível)
+        container.requestFullscreen().catch(err => {
+          alert(`Erro ao tentar ativar tela cheia: ${err.message}`);
+        });
+        btnFullscreen.textContent = "Sair da Tela Cheia";
+      } else {
+        // Se já estiver, sai do modo fullscreen
+        document.exitFullscreen();
+        btnFullscreen.textContent = "Ativar Tela Cheia";
+      }
+    }
 
     // Ouvinte de evento para o botão
     btnFullscreen.addEventListener('click', alternarFullscreen);
