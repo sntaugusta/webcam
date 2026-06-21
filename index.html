@@ -71,32 +71,6 @@
       }
     }
 
-    // 2. Função para alternar o modo Fullscreen
-    function alternarFullscreen() {
-      alert(1)
-      // Verifica se já está em fullscreen
-      if (!document.fullscreenElement) {
-        // Se não estiver, solicita o fullscreen para o CONTAINER (para manter o botão visível)
-        container.requestFullscreen().catch(err => {
-          alert(`Erro ao tentar ativar tela cheia: ${err.message}`);
-        });
-        btnFullscreen.textContent = "Sair da Tela Cheia";
-      } else {
-        // Se já estiver, sai do modo fullscreen
-        document.exitFullscreen();
-        btnFullscreen.textContent = "Ativar Tela Cheia";
-      }
-    }
-
-    // Ouvinte de evento para o botão
-    btnFullscreen.addEventListener('click', alternarFullscreen);
-
-    // Atualiza o texto do botão caso o usuário saia do fullscreen pelo teclado (Esc)
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        btnFullscreen.textContent = "Ativar Tela Cheia";
-      }
-    });
     window.addEventListener('load', () => {
       iniciarCamera();
     })
