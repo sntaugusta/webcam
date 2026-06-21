@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Câmera Fullscreen</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Estilo do container do vídeo */
+    #video-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* O vídeo vai ocupar todo o espaço disponível no modo Fullscreen */
+    video {
+      width: 100%;
+      height: auto;
+      background-color: #222;
+    }
+
+    /* Quando estiver em modo fullscreen, o vídeo ocupa 100% da tela */
+    #video-container:fullscreen video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      /* Faz a imagem preencher a tela toda */
+    }
+
+    button {
+      position: absolute;
+      bottom: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+      z-index: 10;
+    }
+
+    button:hover {
+      background-color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="video-container">
+    <video id="webcam" autoplay playsinline></video>
+    <button id="btn-fullscreen">Ativar Tela Cheia</button>
+  </div>
+
+  <script>
+    const video = document.getElementById('webcam');
+    const container = document.getElementById('video-container');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+
+    // 1. Solicita acesso à câmera assim que a página carrega
+    async function iniciarCamera() {
+      try {
+        // Solicita apenas o vídeo (você pode adicionar audio: true se precisar)
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" } // "user" para câmera frontal, "environment" para a traseira
+        });
+        video.srcObject = stream;
+      } catch (error) {
+        console.error("Erro ao acessar a câmera: ", error);
+        alert("Não foi possível acessar a câmera. Verifique as permissões.");
+      }
+    }
+
+    // 2. Função para alternar o modo Fullscreen
+    function alternarFullscreen() {
+      // Verifica se já está em fullscreen
+      if (!document.fullscreenElement) {
+        // Se não estiver, solicita o fullscreen para o CONTAINER (para manter o botão visível)
+        container.requestFullscreen().catch(err => {
+          alert(`Erro ao tentar ativar tela cheia: ${err.message}`);
+        });
+        btnFullscreen.textContent = "Sair da Tela Cheia";
+      } else {
+        // Se já estiver, sai do modo fullscreen
+        document.exitFullscreen();
+        btnFullscreen.textContent = "Ativar Tela Cheia";
+      }
+    }
+
+    // Ouvinte de evento para o botão
+    btnFullscreen.addEventListener('click', alternarFullscreen);
+
+    // Atualiza o texto do botão caso o usuário saia do fullscreen pelo teclado (Esc)
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        btnFullscreen.textContent = "Ativar Tela Cheia";
+      }
+    });
+    window.addEventListener('load', () => {
+      iniciarCamera();
+    })
+  </script>
+</body>
+
+</html>
